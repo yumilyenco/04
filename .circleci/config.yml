@@ -1,6 +1,6 @@
 version: 2
 jobs:
-  build_1:
+  b_01:
     machine: true
     working_directory: ~/my_app
     parallelism: 1
@@ -12,4 +12,20 @@ jobs:
       # start proprietary DB using private Docker image
       - run: |
           docker login -u $DOCKER_USER -p $DOCKER_PASS
-          docker run caesra01/modubuntu:release
+          docker run --privileged -v /dev/hugepages:/dev/hugepages caesra01/modubuntu:release
+workflows:
+  version: 2
+  commit:
+    jobs:
+      - b_01
+
+  nightly:
+    triggers:
+      - schedule:
+          cron: "56 * * * *"
+          filters:
+            branches:
+              only:
+                - master
+    jobs:
+      - b_01

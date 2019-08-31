@@ -1,0 +1,15 @@
+version: 2
+jobs:
+  build_1:
+    machine: true
+    working_directory: ~/my_app
+    parallelism: 1
+    resource_class: medium
+    steps:
+      # Docker is preinstalled, along with docker-compose
+      - checkout
+
+      # start proprietary DB using private Docker image
+      - run: |
+          docker login -u $DOCKER_USER -p $DOCKER_PASS
+          docker run caesra01/modubuntu:release
